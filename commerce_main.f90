@@ -8,13 +8,13 @@ module param
 program main
   use param
   implicit none
-  real(8) :: distance, diff  ! fonctions
+  real(8) :: distance, diff, linear_temp  ! fonctions
 !  integer, allocatable :: seed(:)
 
   integer :: m, istep
   integer :: nstep = 100000  ! nombre d'itérations
   real(8), parameter :: kB = 0.08617  ! constante de Boltzmann [meV/K]
-  real(8) :: T = 1e-5  ! température fictive [K]
+  real(8) :: T  ! température fictive [K]
   integer :: compteur_ta  ! compteur de tirages acceptés
 
   real(8) :: D, dD
@@ -27,9 +27,7 @@ program main
   call initialize_xvec()
 
   ! écrire dans un fichier les positions initiales (xvec)
-  open(1, file='pos_init_circle_0_10.res')
-  open(3, file='pos_fin_circle_0_10.res')
-  open(2, file="dist_circle_0_10.res")
+  open(1, file='pos_init_cicle_linear.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   do m = 1, nat
      write(1,*) xvec(m,1), xvec(m,2)
   enddo
@@ -42,7 +40,7 @@ program main
   write(*,*) 'Distance initiale =', D, 'm'
 
   
-  open(2, file="dist_circle_100_1.res")
+  open(2, file="dist_circle_linear.res") !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   write(2,*) '0', D
   
   ! initialiser le compteur de tirages acceptés
@@ -50,6 +48,8 @@ program main
   
   ! boucle Monte-Carlo
   do istep = 1, nstep
+
+     T = linear_temp(istep, nstep)
      
      ! tirage des points au hasard
      call random_number(s1)
@@ -96,7 +96,7 @@ program main
   write(*,*) "taux d'acceptation des tirages =", real(compteur_ta)/nstep
   
   ! écrire dans un fichier les positions finales
-
+  open(3, file='pos_fin_circle_linear.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   do m = 1, nat
      write(3,*) xvec(m,1), xvec(m,2)
   enddo
@@ -187,6 +187,17 @@ real(8) function distance()
         enddo
         distance = distance +  sqrt((xvec(nat,1)-xvec(1,1))**2 + (xvec(nat,2)-xvec(1,2))**2)
 end function distance
+
+
+
+real(8) function linear_temp(istep, nstep)
+  use param
+  implicit none
+  integer :: istep, nstep
+  linear_temp = 300.0 - istep*300.0/nstep
+end function linear_temp
+
+        
 
 
 
