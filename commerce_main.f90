@@ -1,6 +1,6 @@
 module param
   implicit none
-  integer, parameter :: nat = 127, T0 = 3000  ! nombre de villes/points/...
+  integer, parameter :: nat = 127, T0 = 350   ! nombre de villes/points/...
   real(8), dimension(nat,2) :: xvec, xvec_new  ! positions des villes/points (2d)
   end module param
 
@@ -28,9 +28,9 @@ program main
   call initialize_xvec()
 
   ! écrire dans un fichier les positions initiales (xvec)
-  open(1, file='pos_init_beer_exp_7.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  open(2, file="dist_beer_exp_7.res") !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  open(3, file='pos_fin_beer_exp_7.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  open(1, file='pos_init_beer_lin_7.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  open(2, file="dist_beer_step_lin_7.res") !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  open(3, file='pos_fin_beer_lin_7.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   do m = 1, nat
      write(1,*) xvec(m,1), xvec(m,2)
@@ -190,11 +190,11 @@ real(8) function temperature_function(istep, nstep)
   use param
   implicit none
   integer :: istep, nstep
-  real :: linear_temp, exp_temp, const_temp, stepwise_temp
+  real :: linear_temp, exp_temp, const_temp, stepwise_temp, sig_temp
   linear_temp = T0 - istep*T0/nstep
   exp_temp   = T0*((0.8)**istep) !exponential multiplicative cooling Kirkpatrick, Gelatt and Vecchi (1983)
   const_temp = T0
-
+  sig_temp = 3000/(0.5+(exp((istep*1.0-30000)/3000)))
   if (istep.lt.nat/9) then
      stepwise_temp = 300
   else if (istep.lt.(2*nat/9).and.istep.ge.(nat/9)) then
@@ -216,7 +216,7 @@ real(8) function temperature_function(istep, nstep)
    endif
    
   
-  temperature_function = exp_temp!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  temperature_function = linear_temp!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 end function temperature_function
 
 
