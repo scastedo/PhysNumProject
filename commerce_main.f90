@@ -1,6 +1,6 @@
 module param
   implicit none
-  integer, parameter :: nat = 127, T0 = 1e3  ! nombre de villes/points/...
+  integer, parameter :: nat = 127, T0 = 3000  ! nombre de villes/points/...
   real(8), dimension(nat,2) :: xvec, xvec_new  ! positions des villes/points (2d)
   end module param
 
@@ -12,8 +12,8 @@ program main
   integer, allocatable :: seed(:)
 
   integer :: m, istep
-  integer :: nstep = 10000000  ! nombre d'itérations
-  real(8), parameter :: kB = 0.08617  ! constante de Boltzmann [meV/K]
+  integer :: nstep = 1e7  ! nombre d'itérations
+  real(8), parameter :: kB = 1  ! constante de Boltzmann [meV/K]
   real(8) :: T  ! température fictive [K]
   integer :: compteur_ta  ! compteur de tirages acceptés
 
@@ -28,9 +28,9 @@ program main
   call initialize_xvec()
 
   ! écrire dans un fichier les positions initiales (xvec)
-  open(1, file='pos_init_beer.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  open(2, file="dist_beer.res") !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  open(3, file='pos_fin_beer.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  open(1, file='pos_init_beer_exp_7.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  open(2, file="dist_beer_exp_7.res") !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  open(3, file='pos_fin_beer_exp_7.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   do m = 1, nat
      write(1,*) xvec(m,1), xvec(m,2)
@@ -114,7 +114,7 @@ subroutine initialize_xvec()
   integer :: b, c1, c2,i
   real(8), dimension(1,2) :: temp
   
-  open(4, file = 'bier127.txt')
+  open(4, file = 'bier127.txt') !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   do i = 1, nat
      read(4,*) xvec(i,1), xvec(i,2)
   enddo
@@ -173,12 +173,6 @@ real(8) function diff(k1, k2)
 !!$   diff = diff - sqrt((xvec(mod(k2+1,nat),1) - xvec(k2,1))**2 + (xvec(mod(k2+1,nat),2) - xvec(k2,2))**2)
 end function diff
 
-
-! (histogram)
-
-
-
-
 real(8) function distance()
 	use param
 	implicit none
@@ -196,14 +190,36 @@ real(8) function temperature_function(istep, nstep)
   use param
   implicit none
   integer :: istep, nstep
-  real :: linear_temp, exp_temp, const_temp
+  real :: linear_temp, exp_temp, const_temp, stepwise_temp
   linear_temp = T0 - istep*T0/nstep
   exp_temp   = T0*((0.8)**istep) !exponential multiplicative cooling Kirkpatrick, Gelatt and Vecchi (1983)
-  const_temp = 0.5
-  temperature_function = linear_temp
+  const_temp = T0
+
+  if (istep.lt.nat/9) then
+     stepwise_temp = 300
+  else if (istep.lt.(2*nat/9).and.istep.ge.(nat/9)) then
+     stepwise_temp = 300 - istep*200/(nstep/9)
+  else if (istep.lt.nat/3.and.istep.ge.(2*nat/9)) then
+     stepwise_temp = 100
+  else if (istep.lt.(4*nat/9).and.istep.ge.(nat/3)) then
+        stepwise_temp = 100 - istep*98/(nstep/9)
+  else if (istep.lt.(5*nat/9).and.istep.ge.(4*nat/9)) then 
+      stepwise_temp = 2
+   else if (istep.lt.(2*nat/3).and.istep.ge.(5*nat/9)) then
+      stepwise_temp = 2 + istep*48/(nstep/9)
+   else if (istep.lt.(7*nat/9).and.istep.ge.(2*nat/3)) then
+      stepwise_temp = 50
+   else if (istep.lt.(8*nat/9).and.istep.ge.(7*nat/9)) then
+       stepwise_temp = 50 - istep*49.99999/(nstep/9)
+   else if (istep.ge.(8*nat/9)) then
+      stepwise_temp = 1e-5
+   endif
+   
+  
+  temperature_function = exp_temp!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 end function temperature_function
 
-        
+
 
 subroutine init_random_seed()
 	use iso_fortran_env, only: int64
