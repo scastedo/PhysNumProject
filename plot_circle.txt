@@ -1,0 +1,26 @@
+set encoding iso_8859_1
+set term pngcairo color enhanced font "Helvetica,11" solid size 640,640
+
+set output "circle_300K_3_final_NEW.png"
+
+set tics out
+
+set size square
+
+set xlabel "x"
+set ylabel "y"
+
+unset key
+
+set xrange [-1.3:1.3]
+set yrange [-1.3:1.3]
+
+#set label 1 "initial path" at graph 0.65, 0.93
+set label 1 "final path" at graph 0.7, 0.93
+set label 2 "300 K" at graph 0.8, 0.85
+
+set style line 1 lc rgb "blue" linetype 1 lw 2 pointtype 7 pointsize 1.5
+
+set grid lt 0 lw 1 lc rgb "black"
+
+plot "pos_fin_circle_300_3.res" u 1:2 w linespoints linestyle 1 
