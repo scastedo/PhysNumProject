@@ -1,0 +1,28 @@
+set encoding iso_8859_1
+set term pngcairo color enhanced font "Helvetica,14" solid size 1000,1000
+
+set output "plots_us/us_sigmoid_5_initial.png"
+
+set tics out
+set xtics 2000
+set ytics 2000
+
+set size ratio -1
+
+set xlabel "x [km]"
+set ylabel "y [km]"
+
+unset key
+
+# set xrange [:]
+set yrange [0:6000]
+
+set label 1 "initial path" at graph 0.05, 0.93
+#set label 1 "final path" at graph 0.05, 0.93
+set label 2 "sigmoid" at graph 0.05, 0.85
+
+set style line 1 lc rgb "blue" linetype 1 lw 2 pointtype 7 pointsize 1.5
+
+set grid lt 0 lw 1 lc rgb "black"
+
+plot "us_sigmoid/pos_init_us_sigmoid_5.res" u 1:2 w linespoints linestyle 1 
