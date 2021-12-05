@@ -28,9 +28,12 @@ program main
   call initialize_xvec()
 
   ! écrire dans un fichier les positions initiales (xvec)
-  open(1, file='results_us/us_sigmoid/pos_init_us_sigmoid_5.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  open(2, file="results_us/us_sigmoid/dist_us_sigmoid_5.res") !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  open(3, file='results_us/us_sigmoid/pos_fin_us_sigmoid_5.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!  open(1, file='results_us/us_sigmoid/pos_init_us_sigmoid_5.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!  open(2, file='results_us/us_sigmoid/dist_us_sigmoid_5.res') !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!  open(3, file='results_us/us_sigmoid/pos_fin_us_sigmoid_5.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  open(1, file='test1.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  open(2, file="test2.res") !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  open(3, file='test3.res')  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   do m = 1, nat
      write(1,*) xvec(m,1), xvec(m,2)
@@ -50,9 +53,11 @@ program main
   compteur_ta = 0
   
   ! boucle Monte-Carlo
+  open(5, file='stepwise_T_us.txt')  !#############################################################
   do istep = 1, nstep
 
      T = temperature_function(istep, nstep)
+     write(5,*) istep, T  ! #######################################################################
      
      ! tirage des points au hasard
      call random_number(s1)
@@ -93,6 +98,7 @@ program main
   enddo
   
   close(2)
+  close(5)  !#################################################################################################
   
   ! écrire à l'écran la distance finale et le taux d'acceptation des tirages
   write(*,*) "distance finale =", D, "m"
@@ -196,28 +202,28 @@ real(8) function temperature_function(istep, nstep)
   const_temp = T0
   sigmoid_temp = 2500/(0.5 + exp((istep*1.0-4000)/2500))
 
-  if (istep.lt.nat/9) then
+  if (istep.lt.nstep/9) then
      stepwise_temp = 3000
-  else if (istep.lt.(2*nat/9).and.istep.ge.(nat/9)) then
-     stepwise_temp = 3000 - istep*1900/(nstep/9)
-  else if (istep.lt.nat/3.and.istep.ge.(2*nat/9)) then
+  else if (istep.lt.(2*nstep/9).and.istep.ge.(nstep/9)) then
+     stepwise_temp = 3000 - (istep-nstep/9)*1900/(nstep/9)
+  else if (istep.lt.nstep/3.and.istep.ge.(2*nstep/9)) then
      stepwise_temp = 100
-  else if (istep.lt.(4*nat/9).and.istep.ge.(nat/3)) then
-        stepwise_temp = 100 + istep*1900/(nstep/9)
-  else if (istep.lt.(5*nat/9).and.istep.ge.(4*nat/9)) then 
+  else if (istep.lt.(4*nstep/9).and.istep.ge.(nstep/3)) then
+        stepwise_temp = 100 + (istep-nstep/3)*1900/(nstep/9)
+  else if (istep.lt.(5*nstep/9).and.istep.ge.(4*nstep/9)) then 
       stepwise_temp = 2000
-   else if (istep.lt.(2*nat/3).and.istep.ge.(5*nat/9)) then
-      stepwise_temp = 2000 - istep*1000/(nstep/9)
-   else if (istep.lt.(7*nat/9).and.istep.ge.(2*nat/3)) then
+   else if (istep.lt.(2*nstep/3).and.istep.ge.(5*nstep/9)) then
+      stepwise_temp = 2000 - (istep-5*nstep/9)*1000/(nstep/9)
+   else if (istep.lt.(7*nstep/9).and.istep.ge.(2*nstep/3)) then
       stepwise_temp = 1000
-   else if (istep.lt.(8*nat/9).and.istep.ge.(7*nat/9)) then
-       stepwise_temp = 1000 - istep*900/(nstep/9)
-   else if (istep.ge.(8*nat/9)) then
+   else if (istep.lt.(8*nstep/9).and.istep.ge.(7*nstep/9)) then
+       stepwise_temp = 1000 - (istep-7*nstep/9)*900/(nstep/9)
+   else if (istep.ge.(8*nstep/9)) then
       stepwise_temp = 100
    endif
    
   
-  temperature_function = sigmoid_temp  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  temperature_function = stepwise_temp  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 end function temperature_function
 
 
