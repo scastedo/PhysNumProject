@@ -1,0 +1,31 @@
+set encoding iso_8859_1
+set term pngcairo color enhanced font "Helvetica,14" solid size 1000,1000
+
+set output "plot_T_vs_istep_us.png"
+
+set tics out
+set xtics 20000
+set ytics 2000
+
+set size square
+
+set xlabel "iteration step"
+set ylabel "T [K]"
+
+set xrange [0:100000]
+#set yrange [0:6000]
+
+set label 1 "US capitals" at graph 0.04, 0.9
+set key
+
+set style line 1 lc rgb "blue" linetype 1 lw 2
+set style line 2 lc rgb "red" linetype 1 lw 2
+set style line 3 lc rgb "green" linetype 1 lw 2
+set style line 4 lc rgb "violet" linetype 1 lw 2
+
+set grid lt 0 lw 1 lc rgb "black"
+
+plot (1000 - x*999/100000) w lines linestyle 1 title "linear"\
+,(3000 * 0.8**(x/5000)) w lines linestyle 2 title "exponential"\
+,(2500 / (0.5 + exp((x-40000)/10000))) w lines linestyle 3 title "sigmoid"\
+, 'stepwise_T_us.txt' u 1:2 w lines linestyle 4 title "stepwise"
