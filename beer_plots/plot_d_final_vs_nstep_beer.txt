@@ -1,0 +1,32 @@
+set term pngcairo color enhanced font "Helvetica,11" solid size 640,1000
+
+set output "beer_d_final_vs_nstep.png"
+
+set format x "10^{%L}"
+set tics out
+set xtics (1e3, 1e4, 1e5, 1e6, 1e7, 1e8)
+#set ytics 100000
+
+set xlabel "number of iterations"
+set ylabel "final path length [10^5 m]"
+
+set key
+
+#set xrange [0:10000000]
+set yrange [1:7]
+
+set logscale x
+
+set style line 1 lc rgb "red" linetype 1 lw 2 pointtype 7 pointsize 1.5
+set style line 2 lc rgb "blue" linetype 1 lw 2 pointtype 7 pointsize 1.5
+set style line 3 lc rgb "dark-magenta" linetype 1 lw 2 pointtype 7 pointsize 1.5
+set style line 4 lc rgb "dark-cyan" linetype 1 lw 2 pointtype 7 pointsize 1.5
+set style line 5 lc rgb "black" linetype 1 lw 2 pointtype 7 pointsize 1.5
+
+set grid lt 0 lw 1 lc rgb "black"
+
+plot "nstep_vs_d_final_350.txt" u 1:($2/100000) w linespoints linestyle 1 title "T =350 K=const."\
+,"nstep_vs_d_final_lin.txt" u 1:($2/100000) w linespoints linestyle 2 title "linear"\
+,"nstep_vs_d_final_exp.txt" u 1:($2/100000) w linespoints linestyle 3 title "exponential"\
+,"nstep_vs_d_final_sig.txt" u 1:($2/100000) w linespoints linestyle 4 title "sigmoid"
+#,"nstep_vs_d_final_step.txt" u 1:($2/100000) w linespoints linestyle 5 title "stepwise"
