@@ -1,0 +1,32 @@
+set term pngcairo color enhanced font "Helvetica,20" solid size 640,640
+
+set output "beer_acceptance_vs_nstep.png"
+
+set format x "10^{%L}"
+set tics out
+set xtics (1e3, 1e4, 1e5, 1e6, 1e7, 1e8)
+#set ytics 100000
+
+set xlabel "number of iterations"
+set ylabel "acceptance rate"
+
+set key
+
+#set xrange [0:10000000]
+#set yrange [1:6]
+
+set logscale x
+
+set style line 1 lc rgb "red" linetype 1 lw 2 pointtype 7 pointsize 1.5
+set style line 2 lc rgb "blue" linetype 1 lw 2 pointtype 7 pointsize 1.5
+set style line 3 lc rgb "dark-magenta" linetype 1 lw 2 pointtype 7 pointsize 1.5
+set style line 4 lc rgb "dark-cyan" linetype 1 lw 2 pointtype 7 pointsize 1.5
+set style line 5 lc rgb "black" linetype 1 lw 2 pointtype 7 pointsize 1.5
+
+set grid lt 0 lw 1 lc rgb "black"
+
+plot "acceptance_vs_nstep_beer_350.txt" u 1:2 w linespoints linestyle 1 title "T =350 K=const."\
+,"acceptance_vs_nstep_beer_lin.txt" u 1:2 w linespoints linestyle 2 title "linear"\
+,"acceptance_vs_nstep_beer_exp.txt" u 1:2 w linespoints linestyle 3 title "exponential"\
+,"acceptance_vs_nstep_beer_sig.txt" u 1:2 w linespoints linestyle 4 title "sigmoid"\
+,"acceptance_vs_nstep_beer_step.txt" u 1:2 w linespoints linestyle 5 title "stepwise"

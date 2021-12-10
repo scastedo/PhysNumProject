@@ -1,0 +1,39 @@
+set encoding iso_8859_1
+set term pngcairo color enhanced font "Helvetica,20" solid size 1300,640
+
+set output "plot_dist_vs_istep_circle.png"
+
+set tics out
+set xtics 20
+set ytics 10
+
+#set size square
+
+set xlabel "iteration step [10^3]"
+set ylabel "path length"
+
+set xrange [0:100]
+set yrange [0:70]
+
+set label 1 "circle" at graph 0.04, 0.9
+set key above
+
+set style line 1 lc rgb "red" linetype 1 lw 3
+set style line 2 lc rgb "dark-green" linetype 1 lw 3
+set style line 3 lc rgb "blue" linetype 1 lw 3
+set style line 4 lc rgb "dark-magenta" linetype 1 lw 3
+set style line 5 lc rgb "dark-cyan" linetype 1 lw 3
+set style line 6 lc rgb "black" linetype 1 lw 3
+set style line 7 lc rgb "orange" linetype 1 lw 3
+set style line 8 lc rgb "spring-green" linetype 1 lw 3
+
+set grid lt 0 lw 2 lc rgb "black"
+
+plot "dist_beer_circle_300_2.res" u ($1/1000):2 w lines linestyle 1 title "300 K"\
+, "dist_beer_circle_100_1.res" u ($1/1000):2 w lines linestyle 2 title "100 K"\
+, "dist_beer_circle_10_1.res" u ($1/1000):2 w lines linestyle 3 title "10 K"\
+, "dist_beer_circle_2_3.res" u ($1/1000):2 w lines linestyle 4 title "2 K"\
+, "dist_beer_circle_0_1.res" u ($1/1000):2 w lines linestyle 5 title "1e-5 K"\
+, "dist_beer_circle_linear_3.res" u ($1/1000):2 w lines linestyle 6 title "linear"\
+, "dist_beer_circle_exp_2.res" u ($1/1000):2 w lines linestyle 7 title "exponential"\
+, "dist_circle_step_4.res" u ($1/1000):2 w lines linestyle 8 title "stepwise"

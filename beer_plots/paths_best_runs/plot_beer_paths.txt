@@ -1,0 +1,30 @@
+set encoding iso_8859_1
+set term pngcairo color enhanced font "Helvetica,20" solid size 600,640
+
+set output "beer_final_lin_6.png"
+
+set tics out
+set xtics 4
+set ytics 4
+
+set size ratio -1
+
+set xlabel "x [km]"
+set ylabel "y [km]"
+
+unset key
+
+set xrange [0:18]
+#set yrange [2:22]
+
+#set label 1 "initial path" at graph 0.05, 0.93
+set label 1 "final path (nstep = 10^6)" at graph 0.05, 0.93
+set label 2 "linear" at graph 0.05, 0.85
+
+set style line 1 lc rgb "blue" linetype 1 lw 2 pointtype 7 pointsize 1.5
+
+set grid lt 0 lw 1 lc rgb "black"
+
+plot "pos_fin_beer_lin_6.res" u ($1/1000):($2/1000) w linespoints linestyle 1 
+
+
